@@ -9,6 +9,7 @@
 
 using namespace std;
 
+/********** SENSE CLASS ***********************/
 class Senses{
 public:
 	bool stench;
@@ -50,7 +51,8 @@ public:
 		this->scream=false;
 	}
 };
-
+/*******************************************************/
+/************* CLASS SQUARE ***************************/
 class Square{
 public:
 	bool wumpus;
@@ -72,7 +74,8 @@ public:
 		wumpus=true;
 	}
 };
-
+/*******************************************************/
+/****************** CLASS GRID *************************/
 class Grid{
 public:
 	int size;
@@ -87,27 +90,61 @@ public:
 			this->grid[i]= new Square[s];
 		}
 	}
+	bool newPosition(int &x, int &y,int orientation){
+		int newX=x;
+		int newY = y;
+		if(orientation==0){
+				newY=y-1;
+		}
+		else if(orientation==1){
+			newY=y-1;
+			newX=x+1;
+		}
+		else if(orientation==2){
+			newX=x+1;
+		}
+		else if(orientation==3){
+			newY=y+1;
+			newX=x+1;
+		}
+		else if(orientation==4){
+			newY=y+1;
+		}
+		else if(orientation==5){
+			newY=y+1;
+			newX=x-1;
+		}
+		else if(orientation==6){
+			newX=x-1;
+		}
+		else if(orientation==7){
+			newY=y-1;
+			newX=x-1;
+		}
+		if(validPosition(newX,newY)){
+			x=newX;
+			y=newY;
+			return true;
+		}
+		else
+			return false;
+	}
 	bool validPosition(int x, int y){
-		if((x>=this->size||x<0)||(x>=this->size||x<0))
+		if((x>=this->size||x<0)||(y>=this->size||y<0))
 			return false;
 		else
 			return true;
 	}
-	void printGrid(int x, int y, int orientation)
-	{
+	void printGrid(int x, int y, int orientation){
 		int m=0;
 		int n=0;
 		bool agentPlaced=false;
 		int coordX=0;
 		int coordY=0;
-		for (int i = 0; i <= 3*this->size+1; ++i)
-		{
-			for (int j = 0; j <= 3*this->size+1; ++j)
-			{
-				if(j==3*this->size+1)
-				{
-					if(coordX==2)
-					{
+		for (int i = 0; i <= 3*this->size+1; ++i){
+			for (int j = 0; j <= 3*this->size+1; ++j){
+				if(j==3*this->size+1){
+					if(coordX==2){
 						cout<<" "<<i/3;
 						coordX=0;
 						break;
@@ -126,10 +163,8 @@ public:
 					cout <<"|";
 				else if (j>0 && i%3==0)
 					cout<<" - ";
-				else
-				{
-					if(j/3==x&&i/3==y&&!agentPlaced)
-					{
+				else{
+					if(j/3==x&&i/3==y&&!agentPlaced){
 						agentPlaced=true;
 						if(orientation==0)
 							cout<<" ^ ";
@@ -157,21 +192,17 @@ public:
 	        cout <<"\n";
 		}
 	}
-	// should look what is in the square
 	int getSquare(int x, int y, bool current = false){
-		if(validPosition(x,y))
-		{
-			if(this->grid[x][y].wumpus && this->grid[x][y].gold && current)
-				return 1;
-			else if(this->grid[x][y].wumpus)
-				return 2;
-			else if(this->grid[x][y].gold && current)
-				return 3;
-			else if(this->grid[x][y].pit)
-				return 4;
-			else
-				return 0;
-		}
+		if(this->grid[x][y].wumpus && this->grid[x][y].gold && current)
+			return 1;
+		else if(this->grid[x][y].wumpus)
+			return 2;
+		else if(this->grid[x][y].gold && current)
+			return 3;
+		else if(this->grid[x][y].pit)
+			return 4;
+		else
+			return 0;
 	}
 	void getSize(){
 		cout<<this->size<<endl;
@@ -186,11 +217,13 @@ public:
 		this->grid[x][y].Wumpus();
 	}
 };
-
+/*******************************************************/
+/********************* CLASS AGENT ********************/
 class Agent{
 public:
 	bool gold;
 	bool bow;
+	bool arrow;
 	int xPos;
 	int yPos;
 	int orientation;
@@ -198,65 +231,47 @@ public:
 
 	Agent(){
 		this->bow=true;
+		this->arrow=true;
 	}
 	void showSenses(Grid *g){
-		sense.reset();
 		getSenses(g);
 		cout<<"Percepts: <St, Br, G, Bu, Sc> = <"<<
 		sense.stench<<","<<sense.breeze<<","<<sense.glitter
 		<<","<<sense.bump<<","<<sense.scream<<">"<<endl;
+		sense.reset();
 	}
 	void getSenses(Grid *g){
-		sense.setSense(g->getSquare(this->xPos,this->yPos,true));
-		sense.setSense(g->getSquare(this->xPos,this->yPos-1));
-		sense.setSense(g->getSquare(this->xPos+1,this->yPos-1));
-		sense.setSense(g->getSquare(this->xPos+1,this->yPos));
-		sense.setSense(g->getSquare(this->xPos+1,this->yPos+1));
-		sense.setSense(g->getSquare(this->xPos,this->yPos+1));
-		sense.setSense(g->getSquare(this->xPos-1,this->yPos+1));
-		sense.setSense(g->getSquare(this->xPos-1,this->yPos));
-		sense.setSense(g->getSquare(this->xPos-1,this->yPos-1));
+		int x;
+		int y;
+		for(int i=0;i<=8;i++){
+			x=this->xPos;
+			y=this->yPos;
+			if(i==8)
+				sense.setSense(g->getSquare(x,y,true));
+			else if(g->newPosition(x,y,i))
+				sense.setSense(g->getSquare(x,y));
+		}
 	}
 	void setPosition(int x, int y){
 			this->xPos=x;
 			this->yPos=y;
 	}
-	void move(){
-		if(this->orientation==0){
-			//if(validMove())
-			this->yPos--;
-		}
-		else if(this->orientation==1){
-			this->yPos--;
-			this->xPos++;
-		}
-		else if(this->orientation==2){
-			this->xPos++;
-		}
-		else if(this->orientation==3){
-			this->yPos++;
-			this->xPos++;
-		}
-		else if(this->orientation==4){
-			this->yPos++;
-		}
-		else if(this->orientation==5){
-			this->yPos++;
-			this->xPos--;
-		}
-		else if(this->orientation==6){
-			this->xPos--;
-		}
-		else if(this->orientation==7){
-			this->yPos--;
-			this->xPos--;
+	void move(Grid *g){
+		if(!g->newPosition(this->xPos,this->yPos,this->orientation))
+			sense.setSense(6);
+	}
+	void shoot(Grid *g){
+		if(this->arrow)
+		{
+			this->arrow=false;
 		}
 	}
 	void setOrientation(int orientation){
 		this->orientation = orientation;
 	}
 };
-
+/******************************************************************/
+/******************** CLASS WORLD ********************************/
 class World{
 	Grid *grid;
 	Agent agent;
@@ -320,10 +335,10 @@ public:
 								continue;
 							}
 							else{
-							 y=line[i]-'0';
-							 grid->setGold(x,y);
-							 flagX=false;
-						 }
+								 y=line[i]-'0';
+								 grid->setGold(x,y);
+								 flagX=false;
+						 	}
 						}
 						else if(j==6){
 							if(!flagX){
@@ -332,10 +347,10 @@ public:
 								continue;
 							}
 							else{
-							 y=line[i]-'0';
-							 grid->setWumpus(x,y);
-							 flagX=false;
-						 }
+								 y=line[i]-'0';
+								 grid->setWumpus(x,y);
+								 flagX=false;
+							 }
 						}
 					}
 				}
@@ -354,11 +369,11 @@ public:
 			grid->printGrid(agent.xPos,agent.yPos,agent.orientation);
 			cout<<endl;
 			agent.showSenses(grid);
+			// show score
 		}while(Command());
 	}
 
 	bool Command(){
-		cout<<grid->getSquare(0,0)<<endl;
 		char action;
 		cout<<"\n"
 		<<"F + Enter: move forward one square in direction of current orientation.\n"
@@ -376,7 +391,7 @@ public:
 
 		// should use function to get the orientation
 		if(action=='F'){
-			agent.move();
+			agent.move(grid);
 		}
 		else if(action == 'R'){
 			if((agent.orientation+1)%8==0)
@@ -392,12 +407,16 @@ public:
 			else
 				agent.setOrientation(abs((agent.orientation-1))%8);
 		}
+		else if(action == 'S'){
+			agent.shoot(grid);
+		}
 		else if (action == 'Q') {
 			return false;
 		}
 		return true;
 	}
 };
+/********************************************************/
 
 int main()
 {
