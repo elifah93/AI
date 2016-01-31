@@ -19,36 +19,36 @@ public:
 	bool scream;
 
 	Senses(){
-		this->stench=false;
-		this->breeze=false;
-		this->glitter=false;
-		this->bump=false;
-		this->scream=false;
+		stench=false;
+		breeze=false;
+		glitter=false;
+		bump=false;
+		scream=false;
 	}
 	void setSense(int x){
 		if (x==0)
 			return;
 		if(x==1){
-			this->glitter=true;
-			this->stench=true;
+			glitter=true;
+			stench=true;
 		}
 		else if(x==2)
-			this->stench=true;
-		else if(x==3)
-			this->glitter=true;
+			stench=true;
+		else if(x==1||x==3||x==7||x==8)
+			glitter=true;
 		else if(x==4)
-			this->breeze=true;
-		else if(x==5)
-			this->scream=true;
-		else if(x==6)
-			this->bump=true;
+			breeze=true;
+		else if(x==9)
+			scream=true;
+		else if(x==10)
+			bump=true;
 	}
 	void reset(){
-		this->stench=false;
-		this->breeze=false;
-		this->glitter=false;
-		this->bump=false;
-		this->scream=false;
+		stench=false;
+		breeze=false;
+		glitter=false;
+		bump=false;
+		scream=false;
 	}
 };
 /*******************************************************/
@@ -58,20 +58,40 @@ public:
 	bool wumpus;
 	bool gold;
 	bool pit;
+	bool bow;
+	bool arrow;
 
 	Square(){
-		this->wumpus=false;
-		this->gold=false;
-		this->pit=false;
+		wumpus=false;
+		gold=false;
+		pit=false;
 	}
-	void Gold(){
+	void putGold(){
 		gold=true;
 	}
-	void Pit(){
+	void putPit(){
 		pit=true;
 	}
-	void Wumpus(){
+	void putWumpus(){
 		wumpus=true;
+	}
+	void removeWumpus(){
+		wumpus=false;
+	}
+	void removeBow(){
+		bow=false;
+	}
+	void removeGold(){
+		gold=false;
+	}
+	void removeArrow(){
+		arrow=false;
+	}
+	void putBow(){
+		bow=true;
+	}
+	void putArrow(){
+		arrow=true;
 	}
 };
 /*******************************************************/
@@ -83,11 +103,11 @@ public:
 
 	Grid(const int s)
 	{
-		this->size=s;
-		this->grid= new Square *[s];
+		size=s;
+		grid= new Square *[s];
 		for (int i = 0; i < s; ++i)
 		{
-			this->grid[i]= new Square[s];
+			grid[i]= new Square[s];
 		}
 	}
 	bool newPosition(int &x, int &y,int orientation){
@@ -130,7 +150,7 @@ public:
 			return false;
 	}
 	bool validPosition(int x, int y){
-		if((x>=this->size||x<0)||(y>=this->size||y<0))
+		if((x>=size||x<0)||(y>=size||y<0))
 			return false;
 		else
 			return true;
@@ -141,9 +161,9 @@ public:
 		bool agentPlaced=false;
 		int coordX=0;
 		int coordY=0;
-		for (int i = 0; i <= 3*this->size+1; ++i){
-			for (int j = 0; j <= 3*this->size+1; ++j){
-				if(j==3*this->size+1){
+		for (int i = 0; i <= 3*size+1; ++i){
+			for (int j = 0; j <= 3*size+1; ++j){
+				if(j==3*size+1){
 					if(coordX==2){
 						cout<<" "<<i/3;
 						coordX=0;
@@ -151,8 +171,8 @@ public:
 					}
 					coordX++;
 				}
-				else if (i==3*this->size+1){
-					if(j/3==this->size)
+				else if (i==3*size+1){
+					if(j/3==size)
 						break;
 					else if(j % 3 == 0)
 						cout<<"   "<<j/3<<"   ";
@@ -193,28 +213,61 @@ public:
 		}
 	}
 	int getSquare(int x, int y, bool current = false){
-		if(this->grid[x][y].wumpus && this->grid[x][y].gold && current)
+		if(grid[x][y].wumpus && grid[x][y].gold && current)
 			return 1;
-		else if(this->grid[x][y].wumpus)
+		else if(grid[x][y].wumpus)
 			return 2;
-		else if(this->grid[x][y].gold && current)
+		else if(current && grid[x][y].gold && grid[x][y].bow){
+			if(grid[x][y].arrow)
+				return 8;
+			else
+				return 7;
+		}
+		else if(grid[x][y].gold && current)
 			return 3;
-		else if(this->grid[x][y].pit)
+		else if(grid[x][y].pit)
 			return 4;
+		else if(grid[x][y].bow){
+			if(grid[x][y].arrow)
+				return 6;
+			else
+				return 5;
+		}
 		else
 			return 0;
 	}
 	void getSize(){
-		cout<<this->size<<endl;
+		cout<<size<<endl;
 	}
 	void setGold(int x, int y){
-		this->grid[x][y].Gold();
+		grid[x][y].putGold();
 	}
 	void setPit(int x, int y){
-		this->grid[x][y].Pit();
+		grid[x][y].putPit();
 	}
 	void setWumpus(int x, int y){
-		this->grid[x][y].Wumpus();
+		grid[x][y].putWumpus();
+	}
+	void wumpusDead(int x, int y){
+		grid[x][y].removeWumpus();
+	}
+	void getGold(int x, int y){
+		grid[x][y].removeGold();
+	}
+	void getBow(int x, int y){
+		grid[x][y].removeBow();
+	}
+	void getArrow(int x, int y){
+		grid[x][y].removeArrow();
+	}
+	void dropBow(int x, int y){
+		grid[x][y].putBow();
+	}
+	void dropArrow(int x, int y){
+		grid[x][y].putArrow();
+	}
+	void dropGold(int x, int y){
+		grid[x][y].putGold();
 	}
 };
 /*******************************************************/
@@ -224,14 +277,17 @@ public:
 	bool gold;
 	bool bow;
 	bool arrow;
+	int lastItem; // last itemX and Y???
 	int xPos;
 	int yPos;
 	int orientation;
 	Senses sense;
 
 	Agent(){
-		this->bow=true;
-		this->arrow=true;
+		bow=true;
+		arrow=true;
+		gold=false;
+		lastItem=0;
 	}
 	void showSenses(Grid *g){
 		getSenses(g);
@@ -258,16 +314,78 @@ public:
 	}
 	void move(Grid *g){
 		if(!g->newPosition(this->xPos,this->yPos,this->orientation))
-			sense.setSense(6);
+			sense.setSense(10);
 	}
 	void shoot(Grid *g){
+		int x=this->xPos;
+		int y=this->yPos;
 		if(this->arrow)
 		{
 			this->arrow=false;
+			if(g->newPosition(x,y,this->orientation)){
+				if(g->getSquare(x,y)==2){
+					sense.setSense(9);
+					g->wumpusDead(x,y);
+				}
+			}
 		}
 	}
-	void setOrientation(int orientation){
-		this->orientation = orientation;
+	void drop(Grid *g){
+		if(bow){
+			g->dropBow(xPos,yPos);
+			bow=false;
+			lastItem=1;
+		}
+		if(arrow){
+			g->dropArrow(xPos,yPos);
+			arrow=false;
+		}
+		if(gold){
+			g->dropGold(xPos,yPos);
+			gold=false;
+			lastItem=2;
+		}
+	}
+	void grab(Grid *g){
+		if(g->getSquare(xPos,yPos,true)==3){
+			gold=true;
+			g->getGold(xPos,yPos);
+		}
+		else if(g->getSquare(xPos,yPos,true)==5){
+			bow=true;
+			g->getBow(xPos,yPos);
+		}
+		else if(g->getSquare(xPos,yPos,true)==6){
+			bow=true;
+			arrow=true;
+			g->getBow(xPos,yPos);
+			g->getArrow(xPos,yPos);
+		}
+		else if(g->getSquare(xPos,yPos,true)==7){
+			if(lastItem==1){
+				gold=true;
+				g->getGold(xPos,yPos);
+			}
+			else{
+				bow=true;
+				g->getBow(xPos,yPos);
+			}
+		}
+		if(g->getSquare(xPos,yPos,true)==8){
+			if(lastItem==1){
+				gold=true;
+				g->getGold(xPos,yPos);
+			}
+			else{
+				bow=true;
+				arrow=true;
+				g->getBow(xPos,yPos);
+				g->getArrow(xPos,yPos);
+			}
+		}
+	}
+	void setOrientation(int o){
+		orientation = o;
 	}
 };
 /******************************************************************/
@@ -406,6 +524,12 @@ public:
 				agent.setOrientation(0);
 			else
 				agent.setOrientation(abs((agent.orientation-1))%8);
+		}
+		else if (action == 'D'){
+			agent.drop(grid);
+		}
+		else if (action == 'G'){
+			agent.grab(grid);
 		}
 		else if(action == 'S'){
 			agent.shoot(grid);
