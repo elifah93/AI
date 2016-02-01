@@ -29,12 +29,11 @@ public:
 		if (x==0)
 			return;
 		if(x==1){
-			glitter=true;
-			stench=true;
+			return;
 		}
 		else if(x==2)
 			stench=true;
-		else if(x==1||x==3||x==7||x==8)
+		else if(x==3||x==7||x==8)
 			glitter=true;
 		else if(x==4)
 			breeze=true;
@@ -213,7 +212,7 @@ public:
 		}
 	}
 	int getSquare(int x, int y, bool current = false){
-		if(grid[x][y].wumpus && grid[x][y].gold && current)
+		if(grid[x][y].wumpus && current || grid[x][y].pit && current)
 			return 1;
 		else if(grid[x][y].wumpus)
 			return 2;
@@ -289,24 +288,36 @@ public:
 		gold=false;
 		lastItem=0;
 	}
-	void showSenses(Grid *g){
-		getSenses(g);
-		cout<<"Percepts: <St, Br, G, Bu, Sc> = <"<<
-		sense.stench<<","<<sense.breeze<<","<<sense.glitter
-		<<","<<sense.bump<<","<<sense.scream<<">"<<endl;
-		sense.reset();
+	bool showSenses(Grid *g){
+		bool alive = getSenses(g);
+		if(alive){
+			cout<<"Percepts: <St, Br, G, Bu, Sc> = <"<<
+			sense.stench<<","<<sense.breeze<<","<<sense.glitter
+			<<","<<sense.bump<<","<<sense.scream<<">"<<endl;
+			sense.reset();
+		}
+		return alive;
 	}
-	void getSenses(Grid *g){
+	bool getSenses(Grid *g){
 		int x;
 		int y;
+		int thing;
 		for(int i=0;i<=8;i++){
 			x=this->xPos;
 			y=this->yPos;
-			if(i==8)
-				sense.setSense(g->getSquare(x,y,true));
-			else if(g->newPosition(x,y,i))
-				sense.setSense(g->getSquare(x,y));
+			if(i==8){
+				thing=g->getSquare(x,y,true);
+				if(thing!=1)
+					sense.setSense(thing);
+				else
+					return false;
+			}
+			else if(g->newPosition(x,y,i)){
+				thing=g->getSquare(x,y);
+				sense.setSense(thing);
+			}
 		}
+		return true;
 	}
 	void setPosition(int x, int y){
 			this->xPos=x;
@@ -347,6 +358,8 @@ public:
 		}
 	}
 	void grab(Grid *g){
+		if(bow||gold) // Should I use this?
+			return;
 		if(g->getSquare(xPos,yPos,true)==3){
 			gold=true;
 			g->getGold(xPos,yPos);
@@ -393,12 +406,19 @@ public:
 class World{
 	Grid *grid;
 	Agent agent;
+	int startX,startY;
+	int score;
+	bool alive;
+	string lastAction;
 
 public:
 	void start(){
 		int size, x, y, orientation,j;
 		bool flagX;
 		string line;
+		score=0;
+		alive=true;
+		lastAction="NA";
   	ifstream myfile("wumpus_1.txt");
 		if (myfile.is_open())
 		{
@@ -425,6 +445,8 @@ public:
 							else{
 							 y=line[i]-'0';
 							 agent.setPosition(x,y);
+							 startX=x;
+							 startY=y;
 							 flagX=false;
 						 }
 						}
@@ -486,13 +508,21 @@ public:
 			system("clear");
 			grid->printGrid(agent.xPos,agent.yPos,agent.orientation);
 			cout<<endl;
-			agent.showSenses(grid);
-			// show score
-		}while(Command());
+			alive=agent.showSenses(grid);
+			if(!alive)
+				score -= 1000;
+			cout<<"Current location: ("<<agent.xPos<<","<<agent.yPos<<")"<<endl;
+			cout<<"Current Score: "<<score<<endl;
+			cout<<"Last Action Selected: "<<lastAction<<endl;
+		}while(alive && Command());
+		if(!alive){
+			cout<<"\nYou fool are dead.\n"
+			<<"Your final score is :"<<score<<endl;
+		}
 	}
 
 	bool Command(){
-		char action;
+		string action;
 		cout<<"\n"
 		<<"F + Enter: move forward one square in direction of current orientation.\n"
 		<<"R + Enter: turn rigth(clickwise) 45 degrees.\n"
@@ -508,16 +538,19 @@ public:
 		cin>>action;
 
 		// should use function to get the orientation
-		if(action=='F'){
+		if(action=="F"){
+			score--;
 			agent.move(grid);
 		}
-		else if(action == 'R'){
+		else if(action == "R"){
+			score--;
 			if((agent.orientation+1)%8==0)
 				agent.setOrientation(0);
 			else
 				agent.setOrientation((agent.orientation+1)%8);
 		}
-		else if(action == 'L'){
+		else if(action == "L"){
+			score--;
 			if(agent.orientation==0)
 				agent.setOrientation (7);
 			else if(abs((agent.orientation-1))%8==0)
@@ -525,18 +558,34 @@ public:
 			else
 				agent.setOrientation(abs((agent.orientation-1))%8);
 		}
-		else if (action == 'D'){
+		else if (action == "D"){
+			score--;
 			agent.drop(grid);
 		}
-		else if (action == 'G'){
+		else if (action == "G"){
+			score--;
 			agent.grab(grid);
 		}
-		else if(action == 'S'){
+		else if(action == "S"){
 			agent.shoot(grid);
+			score -= 10;
 		}
-		else if (action == 'Q') {
+		else if(action == "C"){
+			score--;
+			if(agent.xPos==startX&& agent.yPos==startY){
+				if(agent.gold)
+					score += 1000;
+				cout<<"\nYou are out of the cave.\n"
+				<<"Your final score is :"<<score<<endl;
+			}
 			return false;
 		}
+		else if (action == "Q") {
+			return false;
+		}
+		else
+			action="Invalid move";
+		lastAction=action;
 		return true;
 	}
 };
