@@ -18,6 +18,7 @@ public:
 	bool bump;
 	bool scream;
 
+	/* Initialize all the sense to false */
 	Senses(){
 		stench=false;
 		breeze=false;
@@ -25,12 +26,11 @@ public:
 		bump=false;
 		scream=false;
 	}
+	/* It will set an specific sense depending of the int.
+	 	The int is a code for what is int grid at coordinates x and y*/
 	void setSense(int x){
-		if (x==0)
+		if (x==0||x==1)
 			return;
-		if(x==1){
-			return;
-		}
 		else if(x==2)
 			stench=true;
 		else if(x==3||x==7||x==8)
@@ -42,6 +42,7 @@ public:
 		else if(x==10)
 			bump=true;
 	}
+	/* It would reset all the senses to false */
 	void reset(){
 		stench=false;
 		breeze=false;
@@ -52,43 +53,58 @@ public:
 };
 /*******************************************************/
 /************* CLASS SQUARE ***************************/
+/* This class would be used in the grid class */
 class Square{
 public:
-	bool wumpus;
+	bool wumpusDead;
+	bool wumpusAlive;
 	bool gold;
 	bool pit;
 	bool bow;
 	bool arrow;
 
+	/* Initialize variables to false because they have not been placed here */
 	Square(){
-		wumpus=false;
+		wumpusDead=false;
+		wumpusAlive=false;
 		gold=false;
 		pit=false;
 	}
+	/* Set gold to true for this square */
 	void putGold(){
 		gold=true;
 	}
+	/* Set pit to true for this square */
 	void putPit(){
 		pit=true;
 	}
+	/* Set wumpusAlive to true and wumpusDead to false for this square */
 	void putWumpus(){
-		wumpus=true;
+		wumpusAlive=true;
+		wumpusDead=false;
 	}
+	/* Set wumpusAlive to false and wumpusDead to true for this square */
 	void removeWumpus(){
-		wumpus=false;
+		wumpusAlive=false;
+		wumpusDead=true;
 	}
+	/* Set bow to false for this square */
 	void removeBow(){
 		bow=false;
 	}
+	/* Set gold to flase for this square */
 	void removeGold(){
 		gold=false;
 	}
+	/* Set arrow to false for this square */
 	void removeArrow(){
 		arrow=false;
 	}
+	/* Set bow to true for this square */
 	void putBow(){
 		bow=true;
 	}
+	/* Set arrow to true for this square */
 	void putArrow(){
 		arrow=true;
 	}
@@ -98,8 +114,10 @@ public:
 class Grid{
 public:
 	int size;
-	Square ** grid;
+	Square ** grid; /* Grid will consist of a 2 dimesion array of squares */
 
+ /* Initialize the grid
+ 	Parameters: s, it would be the size of the grid */
 	Grid(const int s)
 	{
 		size=s;
@@ -109,6 +127,10 @@ public:
 			grid[i]= new Square[s];
 		}
 	}
+	/* Get the new x and y according to the orientation of the agent.
+	Parameters: x, the x position of the agent.
+	 						y, the y position of the agent.
+							orientation, the orientation of the agent. */
 	bool newPosition(int &x, int &y,int orientation){
 		int newX=x;
 		int newY = y;
@@ -148,12 +170,19 @@ public:
 		else
 			return false;
 	}
+	/* Check if the (x,y) exists in the grid.
+	Parameters: x, x coordinate.
+							y, y coordinate. */
 	bool validPosition(int x, int y){
 		if((x>=size||x<0)||(y>=size||y<0))
 			return false;
 		else
 			return true;
 	}
+	/* Print the grid and place the agent in the coordinates specified.
+	Parameters: x, x coordinate of the agent.
+	 						y, y coordinate of the agent.
+							orientation, orientation of the agent.*/
 	void printGrid(int x, int y, int orientation){
 		int m=0;
 		int n=0;
@@ -211,18 +240,23 @@ public:
 	        cout <<"\n";
 		}
 	}
-	int getSquare(int x, int y, bool current = false){
-		if(grid[x][y].wumpus && current || grid[x][y].pit && current)
+	/* Return a code int which tells what is in the square.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.
+							current, optional parameter that tells if the agent is in that
+								coordinates.*/
+	int getSquare(int x, int y, bool agent = false){
+		if(grid[x][y].wumpusAlive && agent || grid[x][y].pit && agent)
 			return 1;
-		else if(grid[x][y].wumpus)
+		else if(grid[x][y].wumpusAlive||grid[x][y].wumpusDead)
 			return 2;
-		else if(current && grid[x][y].gold && grid[x][y].bow){
+		else if(agent && grid[x][y].gold && grid[x][y].bow){
 			if(grid[x][y].arrow)
 				return 8;
 			else
 				return 7;
 		}
-		else if(grid[x][y].gold && current)
+		else if(grid[x][y].gold && agent)
 			return 3;
 		else if(grid[x][y].pit)
 			return 4;
@@ -235,36 +269,67 @@ public:
 		else
 			return 0;
 	}
+	/* Return the size of the grid */
 	void getSize(){
 		cout<<size<<endl;
 	}
+	/* Set gold in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void setGold(int x, int y){
 		grid[x][y].putGold();
 	}
+	/* Set pit in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void setPit(int x, int y){
 		grid[x][y].putPit();
 	}
+	/* Set wumpus in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void setWumpus(int x, int y){
 		grid[x][y].putWumpus();
 	}
+	/* Remove wumpus from the given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void wumpusDead(int x, int y){
 		grid[x][y].removeWumpus();
 	}
+	/* Remove gold from the given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void getGold(int x, int y){
 		grid[x][y].removeGold();
 	}
+	/* Remove bow from the given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void getBow(int x, int y){
 		grid[x][y].removeBow();
 	}
+	/* Remove arrow from the given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void getArrow(int x, int y){
 		grid[x][y].removeArrow();
 	}
+	/* Set bow in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void dropBow(int x, int y){
 		grid[x][y].putBow();
 	}
+	/* Set arrow in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void dropArrow(int x, int y){
 		grid[x][y].putArrow();
 	}
+	/* Set gold in given coordinates.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.*/
 	void dropGold(int x, int y){
 		grid[x][y].putGold();
 	}
@@ -276,18 +341,23 @@ public:
 	bool gold;
 	bool bow;
 	bool arrow;
-	int lastItem; // last itemX and Y???
+	int lastItem;
 	int xPos;
 	int yPos;
 	int orientation;
 	Senses sense;
 
+	/* Initialize bow and arrow to true, gold to false, and lastItem to 0,
+		since he did not had anything before. */
 	Agent(){
 		bow=true;
 		arrow=true;
 		gold=false;
 		lastItem=0;
 	}
+	/* Display in the screen what the agent percepts in the current coordinates,
+		and it also returns if the agent is dead or alive.
+	Parameters: g, grid that we use to check what is around the agent. */
 	bool showSenses(Grid *g){
 		bool alive = getSenses(g);
 		if(alive){
@@ -298,6 +368,10 @@ public:
 		}
 		return alive;
 	}
+	/* Get what the agent sense at the the current coordinates, and it will
+	 	return true if the agent can percept something (being alive) of false if
+		he can not.
+	Parameters: g, grid that we use to check what is around the agent. */
 	bool getSenses(Grid *g){
 		int x;
 		int y;
@@ -319,14 +393,21 @@ public:
 		}
 		return true;
 	}
+	/* Set the new coordinates of the agent.
+	Parameters: x, x coordinate.
+	 						y: y coordinate. */
 	void setPosition(int x, int y){
 			this->xPos=x;
 			this->yPos=y;
 	}
+	/* Move the agent to the direction of the orientation.
+	 Parameters: g, only to use fucntions of the class Grid*/
 	void move(Grid *g){
 		if(!g->newPosition(this->xPos,this->yPos,this->orientation))
 			sense.setSense(10);
 	}
+	/* Shoot to the direction of the orientation.
+	 Parameters: g, only to use fucntions of the class Grid*/
 	void shoot(Grid *g){
 		int x=this->xPos;
 		int y=this->yPos;
@@ -341,6 +422,8 @@ public:
 			}
 		}
 	}
+	/* Drop whatever the agent is holding.
+	 Parameters: g, only to use fucntions of the class Grid*/
 	void drop(Grid *g){
 		if(bow){
 			g->dropBow(xPos,yPos);
@@ -357,6 +440,8 @@ public:
 			lastItem=2;
 		}
 	}
+	/* The agent grab whatever is in the square.
+	 Parameters: g, only to use fucntions of the class Grid*/
 	void grab(Grid *g){
 		if(bow||gold) // Should I use this?
 			return;
@@ -397,12 +482,15 @@ public:
 			}
 		}
 	}
+	/* Set the orientation of the agent
+	Parameters: o, orientation of the agent*/
 	void setOrientation(int o){
 		orientation = o;
 	}
 };
 /******************************************************************/
 /******************** CLASS WORLD ********************************/
+/* The class where the magic world of wumpus is created */
 class World{
 	Grid *grid;
 	Agent agent;
@@ -412,6 +500,8 @@ class World{
 	string lastAction;
 
 public:
+	/* Read the file provided and set the wumpus, pits, gold, and all the
+	characteristics of the agent. */
 	void start(){
 		int size, x, y, orientation,j;
 		bool flagX;
@@ -431,7 +521,12 @@ public:
 					{
 						if(j==1)
 						{
-							size=line[i]-'0';
+							//size=stoi(line);
+							sscanf(line.c_str(),"%d",&size);
+							if(size>10){
+								cout<<"The size of the grid cannot be bigger than 10\n";
+								return;
+							}
 							grid = new Grid(size);
 						}
 						else if(j==2)
@@ -502,6 +597,7 @@ public:
 
 		run();
 	}
+	/* What gives live to the world */
 	void run(){
 		do
 		{
@@ -520,7 +616,8 @@ public:
 			<<"Your final score is :"<<score<<endl;
 		}
 	}
-
+	/* Ask to the user to choose an action. It will return false if the user
+	wants to end the game. */
 	bool Command(){
 		string action;
 		cout<<"\n"
@@ -590,9 +687,8 @@ public:
 	}
 };
 /********************************************************/
-
 int main()
 {
-	World world;
-	world.start();
+	World world; /* Create wumpus world */
+	world.start(); /* Start wumpus world */
 }
