@@ -280,29 +280,19 @@ public:
 	 						y, y coordinate.
 							current, optional parameter that tells if the agent is in that
 								coordinates.*/
-	int getSquare(int x, int y, bool agent = false){
-		if(grid[x][y].wumpusAlive && agent || grid[x][y].pit && agent)
-			return 1;
-		else if(grid[x][y].wumpusAlive||grid[x][y].wumpusDead)
-			return 2;
-		else if(agent && grid[x][y].gold && grid[x][y].bow){
-			if(grid[x][y].arrow)
-				return 8;
-			else
-				return 7;
-		}
-		else if(grid[x][y].gold && agent)
-			return 3;
-		else if(grid[x][y].pit)
-			return 4;
-		else if(grid[x][y].bow){
-			if(grid[x][y].arrow)
-				return 6;
-			else
-				return 5;
-		}
-		else
-			return 0;
+	void getSquareSense(int x, int y,Senses &sense){
+		sense.glitter = grid[x][y].senses.glitter;
+		sense.stench = grid[x][y].senses.stench;
+		sense.breeze = grid[x][y].senses.breeze;
+	}
+
+	void getSquareObj(int x, int y, Square &sq){
+		sq.wumpusAlive = grid[x][y].wumpusAlive;
+		sq.wumpusDead = grid[x][y].wumpusDead;
+		sq.gold = grid[x][y].gold;
+		sq.pit = grid[x][y].pit;
+		sq.bow = grid[x][y].bow;
+		sq.arrow = grid[x][y].arrow;
 	}
 	/* Return the size of the grid */
 	void getSize(){
@@ -352,6 +342,7 @@ public:
 	 						y, y coordinate.*/
 	void getGold(int x, int y){
 		grid[x][y].removeGold();
+		grid[x][y].senses.glitter = false;
 	}
 	/* Remove bow from the given coordinates.
 	Parameters: x, x coordinate.
@@ -382,6 +373,7 @@ public:
 	 						y, y coordinate.*/
 	void dropGold(int x, int y){
 		grid[x][y].putGold();
+		grid[x][y].senses.setSense("gold");
 	}
 };
 /*******************************************************/
@@ -396,6 +388,7 @@ public:
 	int yPos;
 	int orientation;
 	Senses sense;
+	Square square;
 
 	/* Initialize bow and arrow to true, gold to false, and lastItem to 0,
 		since he did not had anything before. */
@@ -423,25 +416,12 @@ public:
 		he can not.
 	Parameters: g, grid that we use to check what is around the agent. */
 	bool getSenses(Grid *g){
-		int x;
-		int y;
-		int thing;
-		for(int i=0;i<=8;i++){
-			x=this->xPos;
-			y=this->yPos;
-			if(i==8){
-				thing=g->getSquare(x,y,true);
-				//if(thing!=1)
-					//sense.setSense(thing);
-				//else
-					//return false;
-			}
-			else if(g->newPosition(x,y,i)){
-				thing=g->getSquare(x,y);
-				//sense.setSense(thing);
-			}
-		}
-		return true;
+		g->getSquareSense(xPos,yPos,this->sense);
+		g->getSquareObj(xPos,yPos,this->square);
+		if(this->square.wumpusAlive || this->square.pit)
+			return false;
+		else
+			return true;
 	}
 	/* Set the new coordinates of the agent.
 	Parameters: x, x coordinate.
@@ -465,7 +445,8 @@ public:
 		{
 			this->arrow=false;
 			if(g->newPosition(x,y,this->orientation)){
-				if(g->getSquare(x,y)==2){
+				g->getSquareObj(x,y,this->square);
+				if(this->square.wumpusAlive){
 					sense.setSense("hit");
 					g->wumpusDead(x,y);
 				}
@@ -489,45 +470,36 @@ public:
 			gold=false;
 			lastItem=2;
 		}
-	}
+	}/*
 	/* The agent grab whatever is in the square.
 	 Parameters: g, only to use fucntions of the class Grid*/
 	void grab(Grid *g){
-		if(bow||gold) // Should I use this?
+		g->getSquareObj(xPos,yPos,this->square);
+		if(bow||gold)
 			return;
-		if(g->getSquare(xPos,yPos,true)==3){
+		if(this->square.gold && this->square.bow){
+			if(lastItem==1){
+				gold=true;
+				g->getGold(xPos,yPos);
+			}
+			else{
+				bow=true;
+				g->getBow(xPos,yPos);
+				if(this->square.arrow){
+					arrow = true;
+					g->getArrow(xPos,yPos);
+				}
+			}
+		}
+		else if(this->square.gold){
 			gold=true;
 			g->getGold(xPos,yPos);
 		}
-		else if(g->getSquare(xPos,yPos,true)==5){
+		else if(this->square.bow){
 			bow=true;
 			g->getBow(xPos,yPos);
-		}
-		else if(g->getSquare(xPos,yPos,true)==6){
-			bow=true;
-			arrow=true;
-			g->getBow(xPos,yPos);
-			g->getArrow(xPos,yPos);
-		}
-		else if(g->getSquare(xPos,yPos,true)==7){
-			if(lastItem==1){
-				gold=true;
-				g->getGold(xPos,yPos);
-			}
-			else{
-				bow=true;
-				g->getBow(xPos,yPos);
-			}
-		}
-		if(g->getSquare(xPos,yPos,true)==8){
-			if(lastItem==1){
-				gold=true;
-				g->getGold(xPos,yPos);
-			}
-			else{
-				bow=true;
-				arrow=true;
-				g->getBow(xPos,yPos);
+			if(this->square.arrow){
+				arrow = true;
 				g->getArrow(xPos,yPos);
 			}
 		}
@@ -559,7 +531,7 @@ public:
 		score=0;
 		alive=true;
 		lastAction="NA";
-  	ifstream myfile("wumpus_1.txt");
+  	ifstream myfile("wumpus_2.txt");
 		if (myfile.is_open())
 		{
 			j=1;
