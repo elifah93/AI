@@ -8,5 +8,6 @@ int main()
 	World world; /* Create wumpus world */
 	world.start(); /* Start wumpus world.*/
 //	World.run(); /*It requires user input.*/
-	world.greedy();
+	//world.greedy();
+	world.aStar();
 }
