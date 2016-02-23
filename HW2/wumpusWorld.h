@@ -1,10 +1,13 @@
+#include <list>
 #include "wumpusComponents.h"
+
 /******************** CLASS WORLD ********************************/
 /* The class where the magic world of wumpus is created */
 class World{
 	Grid *grid;
 	Agent agent;
 	int startX,startY;
+	int xGold, yGold;
 	int score;
 	bool alive;
 	string lastAction;
@@ -14,13 +17,12 @@ public:
 	characteristics of the agent. */
 	void start(){
 		int size, x, y, orientation,j;
-		int xGold, yGold;
 		bool flagX;
 		string line;
 		score=0;
 		alive=true;
 		lastAction="NA";
-  	ifstream myfile("wumpus_2.txt");
+  	ifstream myfile("wumpus_1.txt");
 		if (myfile.is_open())
 		{
 			j=1;
@@ -217,5 +219,16 @@ public:
     displayInfo();
     cout<<"Final score: "<<score<<endl;
   }
+
+	void aStar(){
+		displayInfo();
+		while(true){
+			grid->getMinF(agent.xPos,agent.yPos,score);
+			displayInfo();
+			if(agent.xPos == xGold && agent.yPos == yGold)
+				break;
+		}
+		grid->getPath(xGold,yGold);
+	}
 };
 /********************************************************/

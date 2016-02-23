@@ -2,8 +2,35 @@
 #include <stdlib.h>
 #include <fstream>
 #include <string>
+#include <list>
 
 using namespace std;
+
+/********** STRUCT NODE *********************/
+class node{
+public:
+	int h;
+	int g;
+	int f;
+	int x;
+	int y;
+	node * parent;
+	node(){
+		h = -1;
+		g = 0;
+		f= 0;
+		parent = NULL;
+	}
+	node(int X, int Y){
+		x = X;
+		y = Y;
+		h = -1;
+		g = 0;
+		f= 0;
+		parent = NULL;
+	}
+};
+/********************************************/
 
 /********** SENSE CLASS ***********************/
 class Senses{
@@ -50,8 +77,6 @@ public:
 /* This class would be used in the grid class */
 class Square{
 public:
-	/* Now every square will have h which is the result of the heuristc formula for both greedy and A* algo */
-	int h;
 	bool wumpusDead;
 	bool wumpusAlive;
 	bool gold;
@@ -59,6 +84,7 @@ public:
 	bool bow;
 	bool arrow;
 	Senses senses;
+	node * local;
 
 	/* Initialize variables to false because they have not been placed here */
 	Square(){
@@ -66,7 +92,7 @@ public:
 		wumpusAlive=false;
 		gold=false;
 		pit=false;
-		h = -1;
+		local = new node();
 	}
 	/* Set gold to true for this square */
 	void putGold(){
@@ -110,7 +136,7 @@ public:
 	void calculateH(int x1, int y1, int x2, int y2){
 		if(x1 == x2 && y1==y2)
 			return;
-		h = max(abs(x1-x2),abs(y1-y2));
+		local->h = max(abs(x1-x2),abs(y1-y2));
 	}
 };
 /*******************************************************/
@@ -119,6 +145,8 @@ class Grid{
 public:
 	int size;
 	Square ** grid; /* Grid will consist of a 2 dimesion array of squares */
+	list <node*> Open;
+	list <node*> Close;
 
  /* Initialize the grid
  	Parameters: s, it would be the size of the grid */
@@ -389,20 +417,133 @@ public:
 			int newX = x;
 			int newY = y;
     	if(newPosition(newX,newY,i)){
-				if(grid[newX][newY].h < minH && grid[newX][newY].wumpusAlive == false && grid[newX][newY].pit==false){
+				if(grid[newX][newY].local->h < minH){
 					tmpX = newX;
 					tmpY = newY;
-					minH = grid[tmpX][tmpY].h;
+					minH = grid[tmpX][tmpY].local->h;
 				}
 			}
     }
 		x = tmpX;
 		y = tmpY;
-		if(grid[x][y].h == -1){
+		if(grid[x][y].local->h == -1){
 			return true;
 		}
 		else
 			return false;
+	}
+
+	void getMinF(int &x, int &y, int &cost){
+		node *n;
+		node *c;
+		int newCost;
+		if(cost == 0){
+		c = new node(x,y); // get all the pointer
+		Close.push_front(c);
+		}
+		else{
+			c = findNode(x,y);
+		}
+		for(int i=0; i<8;i++){
+			int newX = x;
+			int newY = y;
+			newCost = cost;
+			if(newPosition(newX,newY,i)){ // 5 plus 25 or 50????
+				if(grid[newX][newY].senses.breeze && grid[newX][newY].senses.stench){
+					newCost += 50;
+				}
+				else if(grid[newX][newY].senses.breeze || grid[newX][newY].senses.stench){
+					newCost += 25;
+				}
+				else{
+					newCost += 5;
+				}
+				if(grid[newX][newY].wumpusAlive || grid[newX][newY].pit)
+					newCost += 500;
+				n = new node(newX,newY);
+				n->h = grid[x][y].local->h;
+				n->g = newCost;
+				n->f = n->h+n->g;
+				n->parent = c;
+				bool flag;
+				node * j= new node();
+				for (list<node*>::iterator it=Close.begin(); it != Close.end(); ++it){
+					j=*it;
+					if(n->x == j->x && n->y == j->y){
+						flag = true;
+						break;
+					}
+					flag = false;
+				}
+				cout<<endl;
+				if(!flag){
+					for (list<node*>::iterator it=Open.begin(); it != Open.end(); ++it){
+						j=*it;
+						if(n->x == j->x && n->y == j->y){
+							flag = true;
+							break;
+						}
+					}
+					if(!flag)
+						Open.push_front(n);
+				}
+			}
+		}
+		n = getSmallestF();
+		Close.push_front(n);
+		x = n->x;
+		y = n->y;
+		cost = n->g;
+	}
+
+	node* getSmallestF(){
+		node *l = new node();
+		l->f = 9999999;
+		node *n = new node();
+		for (list<node*>::iterator it=Open.begin(); it != Open.end(); ++it){
+			n= *it;
+			if(n->f<l->f){
+				l=n;
+			}
+		}
+		Open.remove(l);
+		return l;
+	}
+
+	void getPath(int x, int y){
+		node * j = new node();
+		j = findNode(x,y);
+
+		while(j != NULL){
+			cout<<j->x<<" "<<j->y<<": "<<j->f<<endl;
+			j=j->parent;
+		}
+	}
+
+	node * findNode(int x, int y){
+		bool flag;
+		node * n = new node();
+		for (list<node*>::iterator it=Close.begin(); it != Close.end(); ++it){
+			n=*it;
+			if(n->x == x && n->y == y){
+				flag = true;
+				break;
+			}
+			flag = false;
+		}
+		if(!flag){
+			for (list<node*>::iterator it=Open.begin(); it != Open.end(); ++it){
+				n=*it;
+				if(n->x == x && n->y == y){
+					flag = true;
+					break;
+				}
+			}
+		}
+		if(flag)
+			return n;
+		else
+			return NULL;
 	}
 };
 /*******************************************************/
