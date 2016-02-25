@@ -1,4 +1,3 @@
-#include <list>
 #include "wumpusComponents.h"
 
 /******************** CLASS WORLD ********************************/
@@ -14,15 +13,16 @@ class World{
 
 public:
 	/* Read the file provided and set the wumpus, pits, gold, and all the
-	characteristics of the agent. */
-	void start(){
+	characteristics of the agent.
+	Parameters: file, the name of the file to create wumpus world.*/
+	void start(char file[]){
 		int size, x, y, orientation,j;
 		bool flagX;
 		string line;
 		score=0;
 		alive=true;
 		lastAction="NA";
-  	ifstream myfile("wumpus_1.txt");
+  	ifstream myfile(file);
 		if (myfile.is_open())
 		{
 			j=1;
@@ -34,7 +34,6 @@ public:
 					{
 						if(j==1)
 						{
-							//size=stoi(line);
 							sscanf(line.c_str(),"%d",&size);
 							if(size>10){
 								cout<<"The size of the grid cannot be bigger than 10\n";
@@ -53,6 +52,7 @@ public:
 							else{
 							 y=line[i]-'0';
 							 agent.setPosition(x,y);
+							 grid->placeAgent(x,y);
 							 startX=x;
 							 startY=y;
 							 flagX=false;
@@ -113,19 +113,37 @@ public:
         }
       }
 		}
-		else cout << "Unable to open file"<<endl;
+		else {
+			cout << "Unable to open file"<<endl;
+			return;
+		}
 
+		//world.run(); /*It requires user input.*/
+		cout<<"\n GREEDY"<<endl;
+		greedy(); /* Implementing greedy algortihm*/
+		cout<<"\n A* "<<endl;
+		aStar(); /* Implementing A* algortihm */
 	}
-  bool displayInfo(){
+/* Display the information of wumpus world.
+It could show info for user use or algorithms use.
+Parameters: path, path will only work if the program is running
+					either greedy or A* algorithm.*/
+  bool displayInfo(string path=""){
     system("clear");
     grid->printGrid(agent.xPos,agent.yPos,agent.orientation);
     cout<<endl;
-    alive=agent.showSenses(grid);
-    if(!alive)
-      score -= 1000;
-    cout<<"Current location: ("<<agent.xPos<<","<<agent.yPos<<")"<<endl;
-    cout<<"Current Score: "<<score<<endl;
-    cout<<"Last Action Selected: "<<lastAction<<endl;
+		if(path == ""){
+			alive=agent.showSenses(grid);
+	  	if(!alive)
+	    	score -= 1000;
+	  	cout<<"Current location: ("<<agent.xPos<<","<<agent.yPos<<")"<<endl;
+	  	cout<<"Current Score: "<<score<<endl;
+	  	cout<<"Last Action Selected: "<<lastAction<<endl;
+		}
+		else{
+			cout<<"Path: "<<path<<endl;
+			cout<<"Cost: "<<score<<endl;
+		}
   }
 	/* What gives live to the world */
 	void run(){
@@ -156,7 +174,6 @@ public:
 		<<"Please enter your next action: ";
 		cin>>action;
 
-		// should use function to get the orientation
 		if(action=="F"){
 			score--;
 			agent.move(grid);
@@ -208,27 +225,60 @@ public:
 		return true;
 	}
 
+/* Implementing AI greedy algortihm.*/
   void greedy(){
-    displayInfo();
-    score += 5;
-    /* We have not found the real minimum */
-    while(!grid->getMinH(agent.xPos,agent.yPos)){
-        displayInfo();
-        score += 5;
-    }
-    displayInfo();
-    cout<<"Final score: "<<score<<endl;
-  }
-
-	void aStar(){
-		displayInfo();
-		while(true){
-			grid->getMinF(agent.xPos,agent.yPos,score);
-			displayInfo();
-			if(agent.xPos == xGold && agent.yPos == yGold)
-				break;
+		string path="";
+		string x,y;
+		score = 0;
+		if(startX!=xGold && startY != yGold){
+			agent.xPos = startX;
+			agent.yPos = startY;
+			grid->resetAgents();
+			grid->placeAgent(agent.xPos, agent.yPos);
+			stringstream ss1,ss2;
+			ss1 << agent.xPos;
+			ss2 << agent.yPos;
+			string x = ss1.str();
+			string y = ss2.str();
+			path = path+"("+x+","+y+")";
+		  score += 5;
+		  /* We have not found the real minimum */
+		  while(!grid->getMinH(agent.xPos,agent.yPos)){
+				stringstream ss1,ss2;
+				ss1 << agent.xPos;
+				ss2 << agent.yPos;
+				x = ss1.str();
+				y = ss2.str();
+				path = path+"("+x+","+y+")";
+		    score += 5;
+		  }
+			stringstream ss3,ss4;
+			ss3 << agent.xPos;
+			ss4 << agent.yPos;
+			x = ss3.str();
+			y = ss4.str();
+			path = path+"("+x+","+y+")";
 		}
-		grid->getPath(xGold,yGold);
+    displayInfo(path);
+  }
+/* Implementing AI A* algortihm */
+	void aStar(){
+		string path;
+		score = 0;
+		if(startX!=xGold && startY != yGold){
+			agent.xPos = startX;
+			agent.yPos = startY;
+			grid->resetAgents();
+			grid->placeAgent(agent.xPos, agent.yPos);
+			while(true){
+				score += 5;
+				grid->getMinF(agent.xPos,agent.yPos,score);
+				if(agent.xPos == xGold && agent.yPos == yGold)
+					break;
+			}
+			path=grid->getPath(xGold,yGold);
+		}
+		displayInfo(path);
 	}
 };
 /********************************************************/

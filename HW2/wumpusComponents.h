@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <list>
+#include <sstream>
 
 using namespace std;
 
@@ -63,7 +64,7 @@ public:
 		else if(object == "hit")
 			scream = true;
 	}
-	/* It would reset all the senses to false */
+	/* Reset all the senses to false */
 	void reset(){
 		stench=false;
 		breeze=false;
@@ -77,6 +78,7 @@ public:
 /* This class would be used in the grid class */
 class Square{
 public:
+	bool agent;
 	bool wumpusDead;
 	bool wumpusAlive;
 	bool gold;
@@ -92,6 +94,7 @@ public:
 		wumpusAlive=false;
 		gold=false;
 		pit=false;
+		agent = false;
 		local = new node();
 	}
 	/* Set gold to true for this square */
@@ -132,11 +135,15 @@ public:
 	void putArrow(){
 		arrow=true;
 	}
+	/* Set agent to true for this square. */
+	void placeAgent(){
+		agent = true;
+	}
 	/* Calculate h */
 	void calculateH(int x1, int y1, int x2, int y2){
 		if(x1 == x2 && y1==y2)
 			return;
-		local->h = max(abs(x1-x2),abs(y1-y2));
+		local->h = (max(abs(x1-x2),abs(y1-y2)))*5;
 	}
 };
 /*******************************************************/
@@ -264,7 +271,11 @@ public:
 						cout <<" STENCH  ";
 						continue;
 					}
-					if(!agentPlaced && j/2==x && i/5==y && i%5==4){
+					if (grid[j/2][i/5].agent && i%5==4){
+						cout<<"    X    ";
+						continue;
+					}
+					else if(!agentPlaced && j/2==x && i/5==y && i%5==4){
 						agentPlaced=true;
 						if(orientation==0){
 							cout<<"    ^    ";
@@ -306,17 +317,20 @@ public:
 			cout<<endl;
 		}
 	}
-	/* Return a code int which tells what is in the square.
+	/* Return the set of senses that are true in the square.
 	Parameters: x, x coordinate.
 	 						y, y coordinate.
-							current, optional parameter that tells if the agent is in that
-								coordinates.*/
+							sense, this are the senses of the agent.
+								We will set the senses by reference.*/
 	void getSquareSense(int x, int y,Senses &sense){
 		sense.glitter = grid[x][y].senses.glitter;
 		sense.stench = grid[x][y].senses.stench;
 		sense.breeze = grid[x][y].senses.breeze;
 	}
-
+	/* Return the set of things or objects that are true in the square.
+	Parameters: x, x coordinate.
+	 						y, y coordinate.
+							sq, used to get the values of the things or objects in the square.*/
 	void getSquareObj(int x, int y, Square &sq){
 		sq.wumpusAlive = grid[x][y].wumpusAlive;
 		sq.wumpusDead = grid[x][y].wumpusDead;
@@ -375,6 +389,9 @@ public:
 		grid[x][y].removeGold();
 		grid[x][y].senses.glitter = false;
 	}
+	void placeAgent(int x, int y){
+		grid[x][y].placeAgent();
+	}
 	/* Remove bow from the given coordinates.
 	Parameters: x, x coordinate.
 	 						y, y coordinate.*/
@@ -406,10 +423,25 @@ public:
 		grid[x][y].putGold();
 		grid[x][y].senses.setSense("gold");
 	}
-
+/* Reset of the grid objects to false */
+	void resetAgents(){
+		for(int i = 0; i<size ; i++){
+			for(int j = 0; j<size; j++){
+				grid[i][j].agent = false;
+			}
+		}
+	}
+	/* Call the heuristic function of square to get h.
+	Parameters: x, x coordinate of the square.
+							y, y coordinate of the square.
+							xGold, x coordinate for where the gold is.
+							yGold, y coordinate for where the gold is. */
 	void getH(int x, int y, int xGold, int yGold){
 		grid[x][y].calculateH(x,y,xGold,yGold);
 	}
+	/* Return whether this is the minimum h (-1, where the gold is) of all the grid.
+	Parameters: x, current x coordinate.
+							y, current y coordinate. */
 	bool getMinH(int &x, int &y){
 		int minH = 99999999;
 		int tmpX,tmpY;
@@ -426,20 +458,26 @@ public:
     }
 		x = tmpX;
 		y = tmpY;
+		placeAgent(x,y);
 		if(grid[x][y].local->h == -1){
 			return true;
 		}
 		else
 			return false;
 	}
-
+/* Calculate f for all the adjecent squares in the current x and y.
+ 	It will also keep two list an Open list and Close list. We will use these
+	list for A*. It will also check if one of the adjacent sqaures has been visited.
+	Parameters: x, current x location.
+	 						y, current y location.
+							cost, cost so far.*/
 	void getMinF(int &x, int &y, int &cost){
 		node *n;
 		node *c;
 		int newCost;
-		if(cost == 0){
-		c = new node(x,y); // get all the pointer
-		Close.push_front(c);
+		if(cost == 5){
+			c = new node(x,y);
+			Close.push_front(c);
 		}
 		else{
 			c = findNode(x,y);
@@ -448,7 +486,7 @@ public:
 			int newX = x;
 			int newY = y;
 			newCost = cost;
-			if(newPosition(newX,newY,i)){ // 5 plus 25 or 50????
+			if(newPosition(newX,newY,i)){
 				if(grid[newX][newY].senses.breeze && grid[newX][newY].senses.stench){
 					newCost += 50;
 				}
@@ -475,7 +513,6 @@ public:
 					}
 					flag = false;
 				}
-				cout<<endl;
 				if(!flag){
 					for (list<node*>::iterator it=Open.begin(); it != Open.end(); ++it){
 						j=*it;
@@ -495,7 +532,7 @@ public:
 		y = n->y;
 		cost = n->g;
 	}
-
+/* Gets from the Open list the node with the smallest f */
 	node* getSmallestF(){
 		node *l = new node();
 		l->f = 9999999;
@@ -510,16 +547,31 @@ public:
 		return l;
 	}
 
-	void getPath(int x, int y){
+	/* Returns the path from the start to the goal.
+	Parameters: x, x coordinate of the goal.
+							y, y coordinate of the goal. */
+	string getPath(int x, int y){
+		string s="";
+		string cx,cy;
 		node * j = new node();
 		j = findNode(x,y);
 
 		while(j != NULL){
-			cout<<j->x<<" "<<j->y<<": "<<j->f<<endl;
+			stringstream ss1,ss2;
+			placeAgent(j->x,j->y);
+			ss1 << j->x;
+			ss2 << j->y;
+			cx = ss1.str();
+			cy = ss2.str();
+			s = "("+cx+","+cy+")"+s;
 			j=j->parent;
 		}
+		return s;
 	}
 
+/* Returns a node or NULL depending if it found the node on either Open or Close list.
+	Parameters: x, x coordinate of the node we want to find.
+							y, y coordinate of the node we want to find. */
 	node * findNode(int x, int y){
 		bool flag;
 		node * n = new node();
