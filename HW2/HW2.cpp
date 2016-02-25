@@ -5,9 +5,10 @@
 #include "wumpusWorld.h"
 int main()
 {
+	char file[50];
+	cout<<"Please enter the name of the file that we will use to create the wumpus world: ";
+	cin>>file;
 	World world; /* Create wumpus world */
-	world.start(); /* Start wumpus world.*/
-//	World.run(); /*It requires user input.*/
-	//world.greedy();
-	world.aStar();
+	world.start(file); /* Start wumpus world.*/
+	return 0;
 }
