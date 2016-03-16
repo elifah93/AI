@@ -17,8 +17,24 @@ public:
       populationSize = n*10;
     }
     else{
-      populationSize = n;
+      cout<<"Error. You need more than 10.";
+      return;
     }
     population = new T[populationSize];
+    for(int i = 0; i<populationSize; i++)
+      population[i].generateIndividual(n);
+  }
+  void parentSelection(){
+    return;
+  }
+  void mutation(){
+    return;
+  }
+  void recombination(){
+    return;
+  }
+  void printPopulation(){
+    for(int i = 0; i<populationSize; i++)
+      population[i].printGenotype();
   }
 };
