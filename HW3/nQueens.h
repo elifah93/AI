@@ -7,16 +7,29 @@
 
 class Nqueen{
   int n;
-  vector<int> genotype;
+  vector<int> fakeGenotype;
+  int *genotype;
 
 public:
   void generateIndividual(int size){
+    int i;
     n = size;
-    for (int i=1; i<=n; ++i) genotype.push_back(i);
-    random_shuffle ( genotype.begin(), genotype.end() );
+    for (int i=1; i<=n; ++i) fakeGenotype.push_back(i);
+    random_shuffle ( fakeGenotype.begin(), fakeGenotype.end() );
+    genotype = new int[n];
+    i = 0;
+    for (std::vector<int>::iterator it=fakeGenotype.begin(); it!=fakeGenotype.end(); ++it){
+      genotype[i]=*it;
+      i++;
+    }
   }
   void printGenotype(){
-    for (std::vector<int>::iterator it=genotype.begin(); it!=genotype.end(); ++it)
-      cout << ' ' << *it;
+    for (int i=0; i<n; i++)
+      cout<<genotype[i]<<" ";
+    cout<<endl;
+  }
+  int conflicts(){
+    // Check for the conflicts
+    return 0;
   }
 };
