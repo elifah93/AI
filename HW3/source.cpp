@@ -9,7 +9,7 @@
 using namespace std;
 
 int main(){
-  GA <Nqueen> ga(5);
-
+  GA <Nqueen> ga(11);
+  ga.printPopulation();
   return 0;
 }
