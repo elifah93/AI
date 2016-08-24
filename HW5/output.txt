@@ -1,0 +1,329 @@
+
+
+Learning rate: 0.75, Discount Rate: 0.5
+Epochs: 1388
+rewards:-902
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|    <    |         |    ^>   |    ^>   |    ^    |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    v    |    ^>   |         |    <v   |    ^    |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    <    |    ^>   |    <v   |    >    |    ^    |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    v    |    <    |    <v   |         |    ^    |    ^>   |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|    <v   |    v>   |    v    |    ^>   |    ^>   |    v    |    ^    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    v    |    v>   |    >    |    ^>   |    ^    |    v    |    ^    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    v    |    <^   |    ^>   |         |    <^   |    v>   |    v>   |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|         |    v>   |    <    |    <v   |    <    |    v    |    <    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.1, Discount Rate: 0.5
+Epochs: 170
+rewards:-466
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|         |         |    <^   |    <    |    <    |    <^   |    >    |    >    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    <^   |    >    |    >    |    >    |         |         |    ^    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    <v   |    <^   |    ^    |         |    v>   |         |    ^>   |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    v    |    ^    |    >    |         |         |    v>   |         |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|         |    v>   |         |         |         |    ^    |    v>   |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|         |         |         |         |         |    ^    |         |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|         |         |         |         |    <^   |    >    |         |    >    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|         |         |         |         |    v>   |    >    |    <    |    <v   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.5, Discount Rate: 0.5
+Epochs: 533
+rewards:-3616
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|    <^   |    <    |    <^   |    ^>   |    <    |    ^>   |    ^>   |    >    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    v    |    ^>   |    ^    |    <v   |    >    |    <^   |    ^    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    ^    |    v>   |    <v   |    v>   |    ^>   |    v>   |    ^>   |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    <^   |    <v   |    v>   |    ^>   |    ^    |    ^    |    <    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|    <v   |    >    |    >    |    ^    |    v>   |    ^    |    >    |    ^    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    v    |    ^    |    v    |    <    |    ^>   |    v>   |    <^   |    ^    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    v    |    ^    |    v    |    ^>   |    ^>   |    ^>   |    v>   |    ^    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|    v>   |    <v   |    >    |    >    |    v>   |    <v   |         |    ^>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.9, Discount Rate: 0.5
+Epochs: 755
+rewards:-1211
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|    ^    |    ^>   |    >    |    >    |    ^>   |    ^>   |    >    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    ^    |         |    ^    |    ^>   |    v>   |    ^>   |    <    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    ^    |    <    |    <    |    <    |    ^>   |    v>   |    <v   |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    <^   |    >    |    >    |    ^>   |    >    |    <v   |    v>   |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|    <^   |    <    |    ^>   |    <    |    <v   |    >    |         |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    <^   |    ^>   |    <    |    <v   |         |    ^    |    v>   |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    <^   |    v    |    <v   |         |         |    ^>   |    ^>   |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|    <v   |         |    <    |    >    |    v>   |    >    |    <    |    ^>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.6, Discount Rate: 0.1
+Epochs: 635
+rewards:-1455
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|    <    |         |    ^>   |    >    |    >    |    <^   |    <^   |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    <v   |    ^    |    ^    |    >    |    v    |    >    |    v>   |    ^    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    <v   |    <    |    ^>   |    <    |    v    |    ^    |    ^    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    v    |    ^>   |    <^   |    v>   |    <v   |    ^    |    ^    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|    <^   |    <^   |    v>   |    v    |    ^>   |    ^    |    <    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    v    |    <^   |    <    |    v>   |    >    |    v>   |    >    |    >    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    ^    |    v>   |    ^    |    ^    |    <v   |    ^>   |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|    <^   |    v    |    v>   |    <    |    v>   |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.6, Discount Rate: 0.5
+Epochs: 647
+rewards:-2131
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|    ^    |    ^>   |    ^>   |    >    |    ^    |    >    |    <^   |    <^   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|    v    |    ^>   |    <    |    ^>   |    <v   |    <v   |    v    |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|    ^    |    <    |    v    |    <v   |    <v   |    ^>   |    v>   |    v>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    <^   |    ^    |    ^>   |    <v   |    <    |    <    |    v    |    >    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|    <^   |    ^>   |    <^   |    v    |    >    |    <v   |    <    |    v    |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    ^    |    ^>   |    >    |    v    |    <v   |    v    |         |    ^>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    <^   |    <    |    v    |    <v   |    v>   |    v    |    ^    |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|    <v   |    <    |    <v   |    v    |    >    |    >    |    <    |    <v   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
+
+
+Learning rate: 0.6, Discount Rate: 0.9
+Epochs: 755
+rewards:-363
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |         |
+|         |   PIT   |         |         |         |         |         |   PIT   | 0
+|         |         |         |         |         |         |         |         |
+|         |         |         |         |         |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |
+|         |         |         |   PIT   |         |         |         |         | 1
+|         |         |         |         |         |         |         |         |
+|         |         |    ^    |         |         |         |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|   PIT   |         |         |         |         |   PIT   |         |         | 2
+|         |         |         |         |         |         |         |         |
+|         |    <v   |    >    |    ^>   |    >    |    >    |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         |         | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |         |         |         |         |   PIT   |         | 3
+|         |         |         |         |         |         |         |         |
+|    <v   |    ^    |    ^    |         |         |         |    v>   |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  | BREEZE  |
+|         |         |         |         |         |   PIT   |         |         | 4
+|         |         |         |         |         |         |         |         |
+|         |    v>   |         |         |         |    <v   |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  |         | BREEZE  | BREEZE  |         | BREEZE  |         | BREEZE  |
+|         |   PIT   |         |         |   PIT   | STENCH  |   PIT   | STENCH  | 5
+|         |         |         |         |         |         |         |         |
+|    ^    |    v    |         |    ^    |    >    |    v    |         |    ^>   |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+| BREEZE  | BREEZE  |         | BREEZE  | BREEZE  | BREEZE  |         | BREEZE  |
+|         |         |   PIT   |         |         | STENCH  |  WUMPUS | STENCH  | 6
+|         |         |         |         |         |         |         |         |
+|    ^    |    v    |    <v   |    ^>   |    ^    |    v>   |    >    |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+|         | BREEZE  | BREEZE  | BREEZE  |         |         |         |         |
+|   PIT   |         |         |         |         | STENCH  | STENCH  | STENCH  | 7
+|         |         |         |         |         |         |         |         |
+|    v>   |    >    |    >    |         |    <v   |    <v   |         |         |
++ - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - + - - - - +
+     0         1         2         3         4         5         6         7    
